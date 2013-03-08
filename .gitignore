@@ -3,4 +3,8 @@ build.log
 tmp
 ._*
 tiapp.xml
+<<<<<<< HEAD
 .DS_Store
+=======
+.DS_Store
+>>>>>>> updated gitignore
