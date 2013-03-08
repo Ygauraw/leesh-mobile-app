@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
-    <property name="acs-oauth-secret-production" type="string">56yPCzV1sEGPz1VLN6LfMR5mVmmpUcx2</property>
-    <property name="acs-oauth-key-production" type="string">7NXkEK711tZdTlkn4H0wCO3YdVJTtVlJ</property>
-    <property name="acs-api-key-production" type="string">ztmJ0LK3h020QJ7U675GECj0zx1vddGi</property>
-    <property name="acs-oauth-secret-development" type="string">7Vkts7xvhsR7g0hd2bBhnS9fGk02ta1d</property>
-    <property name="acs-oauth-key-development" type="string">690XH33rQLQ75FIhu1bxGk5Psbral9Qc</property>
-    <property name="acs-api-key-development" type="string">8puq0Yat8W9enHKkmki8SrQgm5NrtM39</property>
     <id>com.nikolic.leesh</id>
     <name>leesh</name>
     <version>1.0</version>
