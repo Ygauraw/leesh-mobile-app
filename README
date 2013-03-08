@@ -1,18 +1,18 @@
-Welcome to your Appcelerator Titanium Mobile Project
+This is the leesh mobile app.
 
-This is a blank project.  Start by editing your application's app.js to 
-make your first mobile project using Titanium.
+It uses the struct project with joli.js as an ORM model and Stately.js for a controller.
 
+Currently in alpha development for "completion" in May 2013.
 
+The core function of the app is to notify users when one group device is too far from the others in the group.
 
-----------------------------------
-Stuff our legal folk make us say:
+Extended features in development allow other members of the group to confirm an abduction 
+within minutes of it occurring, law enforcement to be notified by others in the group with 
+pertinent information from the device on the victim's person. I am loosely working with 
+Federal law enforcement to decide upon what device tracking and environmental information 
+would be pertinent to provide, what scenarios and when to provide it, and to what law 
+enforcement resources should receive it.
 
-Appcelerator, Appcelerator Titanium and associated marks and logos are 
-trademarks of Appcelerator, Inc. 
-
-Titanium is Copyright (c) 2008-2012 by Appcelerator, Inc. All Rights Reserved.
-
-Titanium is licensed under the Apache Public License (Version 2). Please
-see the LICENSE file for the full license.
-
+Technology used is Javascript on a Titanium Mobile development stack for both Android and 
+iOS with local and cloud tracked geofencing. Geomath provided by local calculation confirmed 
+by the Google Maps Tracks API.
