@@ -53,7 +53,7 @@ OBSERVE:{
         //get bearing towards target from last known
         //display onscreen
         //update data
-        //return this.CHECKIN appropriate to application settings;
+        //return this.REPORT appropriate to application settings;
     },
     
     passive: function () {
@@ -62,7 +62,7 @@ OBSERVE:{
         //get bearing towards target from last known
         //display notification of update with distance and age of data
         //update data
-        //return this.CHECKIN appropriate to application settings;
+        //return this.REPORT appropriate to application settings;
     }
     
 },
@@ -102,6 +102,11 @@ REPORT: {
     },
     
     remote: function(){
+        //log unreported points in google geofence
+        	//get last timestamp in remote
+        	//go to appropriate point in db
+        	//post the remaining local measurements from db to remote from point of last timestamp
+        	
         //check location
         var currentPosition = geo.getCurrentPosition();
         //plot point in db
@@ -114,8 +119,8 @@ REPORT: {
 		    heading:			currentPosition.coords.heading, 			
 		    accuracy:			currentPosition.coords.accuracy, 			
 		    speed:				currentPosition.coords.speed
-        });        
-        //log unreported points in google geofence
+        });
+                
         //if any concern, issue warning()
         //if error then go to error()
         //otherwise, go to ok()
@@ -123,7 +128,7 @@ REPORT: {
     
     ok: function () {
         //update is just fine
-        //return this.OBSERVING appropriate to application settings;
+        //return this.REPORT appropriate to application settings;
     },
     
     error: function () {

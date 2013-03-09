@@ -1,4 +1,5 @@
 /* Init Auth Module */
+//dummy values for the moment
 var superAuth = AuthModule.init({
   client_id:       "your_client_id",
   client_secret:   "your_client_secret",
@@ -9,7 +10,7 @@ var superAuth = AuthModule.init({
 /* Create a request to your resource server */
 var updateMap = new Request({
     method: 'POST',
-    url:    'http://your_resource_server_url/personal/details',
+    url:    'https://www.googleapis.com/tracks/v1/',
     ext:    {
       first_name: "Vito",
       last_name:  "Corleone"
@@ -17,17 +18,17 @@ var updateMap = new Request({
 });
 
 /* Set your own onload and onerror methods */
-updateMyName.xhr.onload = function(e) {
+updateMap.xhr.onload = function(e) {
   // do something
   /* Set request as done */
-  updateMyName.setAsDone();
+  updateMap.setAsDone();
 }
-updateMyName.xhr.error = function(e) {
+updateMap.xhr.error = function(e) {
   // do something
   /* Set request as done */
-  updateMyName.setAsDone();
+  updateMap.setAsDone();
 }
 
 /* Send the request (this will start max. 3 clients and it will queue all other request till user is authorized */
-RequestCountLimiter.add(updateMyName);
+RequestCountLimiter.add(updateMap);
 RequestCountLimiter.checkState();
