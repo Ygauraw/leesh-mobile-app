@@ -93,7 +93,7 @@ REPORT: {
         
         var distanceFromNorthPole = geolib.getDistance( currentPosition, northPole );
         
-        Ti.info( distanceFromNorthPole );
+        Ti.API.info( distanceFromNorthPole );
         
         //if any concern, issue warning()
         //if error then go to error()
