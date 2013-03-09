@@ -89,6 +89,7 @@ REPORT: {
         var lastPosition = currentPosition.record.findById( currentPosition.record.id - 1 );
         var distanceTraveled = geolib.getDistance( currentPosition, lastPosition );
         
+        //just for testing, normally we would test gainst the other phones in the group
         var northPole = { latitude: 90, longitude: 0 }
         
         var distanceFromNorthPole = geolib.getDistance( currentPosition, northPole );
@@ -102,7 +103,18 @@ REPORT: {
     
     remote: function(){
         //check location
+        var currentPosition = geo.getCurrentPosition();
         //plot point in db
+        currentPosition.record = models.locations.newRecord({
+		    timeStamp:			currentPosition.coords.timestamp,	
+		    latitude:          	currentPosition.coords.latitude,
+		    longitude:          currentPosition.coords.longitude,
+		    altitude:			currentPosition.coords.altitude,
+		    alltitudeAccuracy:	currentPosition.coords.altitudeAccuracy,
+		    heading:			currentPosition.coords.heading, 			
+		    accuracy:			currentPosition.coords.accuracy, 			
+		    speed:				currentPosition.coords.speed
+        });        
         //log unreported points in google geofence
         //if any concern, issue warning()
         //if error then go to error()
