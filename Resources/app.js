@@ -73,8 +73,28 @@ REPORT: {
     local: function(){
         //if it hasn't hapened too often or for too long
         //check location
+        var currentPosition = geo.getCurrentPosition();
         //plot point in db
+        currentPosition.record = models.locations.newRecord({
+		    timeStamp:			currentPosition.coords.timestamp,	
+		    latitude:          	currentPosition.coords.latitude,
+		    longitude:          currentPosition.coords.longitude,
+		    altitude:			currentPosition.coords.altitude,
+		    alltitudeAccuracy:	currentPosition.coords.altitudeAccuracy,
+		    heading:			currentPosition.coords.heading, 			
+		    accuracy:			currentPosition.coords.accuracy, 			
+		    speed:				currentPosition.coords.speed
+        });        
         //compare distance to last point
+        var lastPosition = currentPosition.record.findById( currentPosition.record.id - 1 );
+        var distanceTraveled = geolib.getDistance( currentPosition, lastPosition );
+        
+        var northPole = { latitude: 90, longitude: 0 }
+        
+        var distanceFromNorthPole = geolib.getDistance( currentPosition, northPole );
+        
+        Ti.info( distanceFromNorthPole );
+        
         //if any concern, issue warning()
         //if error then go to error()
         //otherwise, go to ok()
