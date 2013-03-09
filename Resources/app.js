@@ -3,6 +3,7 @@ Ti.include("/struct/struct.js");
 
 var controller = Stately.machine({
 NEW: {
+    
     //startup
     start: function () {
         S.app.mainWindow = S.ui.createApplicationWindow();
@@ -10,6 +11,37 @@ NEW: {
         //based upon settings
         //either return this.OBSERVING.active OR this.OBSERVING.passive
     }
+    
+},
+
+COUPLE: {
+    
+    //couple 2 or more devices to a peer group
+    connect: function(){
+        //generate group id
+        //give preliminary link to devices in peer group
+        return this.COUPLE.giveRole;
+    },
+    
+    giveRoles: function(){
+        //allow each user to choose a role
+        //be it observer, observed, or peer (mutual observation)
+        //upon selection
+        return this.COUPLE.confirm;
+    },
+    
+    confirm: function(){
+        //show list of users in peer group with chosen roles listed
+        //if unanimous confirmation, write roles to db
+        //else show list again on all devices for those contested group members
+        //with option to remove contested members from group, or cancel entirely
+        //repeat if needed
+    },
+    
+    error: function(){
+        //list coupling errors to group
+    }
+    
 },
 
 OBSERVE:{
@@ -32,6 +64,7 @@ OBSERVE:{
         //update data
         //return this.CHECKIN appropriate to application settings;
     }
+    
 },
 
 REPORT: {
@@ -75,16 +108,21 @@ REPORT: {
 },
 
 DANGER: {
+    
     //notify authorities
     notify: function(){}
+    
 },
 
 WAIT: {
+    
     //wait
     wait: function(){}
+    
 },
 
 SHUTDOWN: {
+    
     end: function(){
         //is this a surprise?
         //what role is this device?
@@ -94,6 +132,7 @@ SHUTDOWN: {
         //log and report
         //else clean up
     }
+    
 }
 
 });
