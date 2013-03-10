@@ -1,4 +1,4 @@
-# leesh mMobile App.
+# leesh Mobile App.
 
 ### The core function of the app is to notify users when one group device is too far from the others in the group.
 
@@ -16,9 +16,9 @@ These files pull other files in, but are the basis of the inclusion tree.
 
 ## If you want to learn this project as a base for your own, pay close attention to the documentation at the following projects:
 
-* '''https://github.com/xavierlacot/joli.js/'''
-* '''https://github.com/fschaefer/Stately.js'''
-* '''https://github.com/krawaller/Struct'''
+* https://github.com/xavierlacot/joli.js/
+* https://github.com/fschaefer/Stately.js
+* https://github.com/krawaller/Struct
 
 This project uses the struct project with joli.js as an ORM model and Stately.js for a controller.
 
