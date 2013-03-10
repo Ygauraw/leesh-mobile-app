@@ -3,8 +3,5 @@ build.log
 tmp
 ._*
 tiapp.xml
-<<<<<<< HEAD
+auth_config.js
 .DS_Store
-=======
-.DS_Store
->>>>>>> updated gitignore
