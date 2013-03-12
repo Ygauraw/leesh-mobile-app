@@ -12,7 +12,7 @@ NEW: {
         //either return this.OBSERVING.active OR this.OBSERVING.passive
     },
     test: function(){
-    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    	Ti.API.info( 'In stately: ' + this.getMachineState() );
     }
     
 },
@@ -45,7 +45,7 @@ COUPLE: {
         //list coupling errors to group
     },
     test: function(){
-    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    	Ti.API.info( 'In stately: ' + this.getMachineState() );
     }
     
 },
@@ -71,7 +71,7 @@ OBSERVE:{
         //return this.REPORT appropriate to application settings;
     },
     test: function(){
-    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    	Ti.API.info( 'In stately: ' + this.getMachineState() );
     }
     
 },
@@ -151,7 +151,7 @@ REPORT: {
         //return this.OBSERVING appropriate to application settings;
     },
     test: function(){
-    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    	Ti.API.info( 'In stately: ' + this.getMachineState() );
     }
 
 },
@@ -171,7 +171,7 @@ WARNING: {
 			//or cancel
 	},
     test: function(){
-    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    	Ti.API.info( 'In stately: ' + this.getMachineState() );
     }
 },
 
@@ -180,7 +180,7 @@ DANGER: {
     //notify authorities
     notify: function(){},
     test: function(){
-    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    	Ti.API.info( 'In stately: ' + this.getMachineState() );
     }
     
 },
@@ -190,7 +190,7 @@ WAIT: {
     //wait
     wait: function(){},
     test: function(){
-    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    	Ti.API.info( 'In stately: ' + this.getMachineState() );
     }
     
 },
@@ -207,7 +207,7 @@ SHUTDOWN: {
         //else clean up
     },
     test: function(){
-    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    	Ti.API.info( 'In stately: ' + this.getMachineState() );
     }
     
 }
@@ -215,7 +215,11 @@ SHUTDOWN: {
 });
 
 controller.start();
+
+Ti.API.info( 'started' );
+Ti.API.info( 'testing start' );
 controller.test();
+Ti.API.info( 'testing end' );
 // hypothitical implementation
 // if( localAppropriate ){
     // controller.local();
@@ -229,4 +233,5 @@ controller.test();
     // controller.error();
 // }
 
+Ti.API.info( 'application end: shutting down' );
 controller.end()
