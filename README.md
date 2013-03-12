@@ -20,7 +20,7 @@ More docs to come, but if you are going to use this project as a base be aware o
 These files pull other files in and are the basis of the inclusion tree.
 ***
 
-## If you want to learn this project as a base for your own, pay close attention to the documentation at the following projects:
+### If you want to learn this project as a base for your own, pay close attention to the documentation at the following projects:
 
 * https://github.com/xavierlacot/joli.js/
 * https://github.com/fschaefer/Stately.js
