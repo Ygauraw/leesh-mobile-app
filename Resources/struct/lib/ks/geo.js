@@ -28,53 +28,55 @@ function geo() {
 	//
 	//  SHOW CUSTOM ALERT IF DEVICE HAS GEO TURNED OFF
 	//
-	if (Titanium.Geolocation.locationServicesEnabled === false){
-		Titanium.UI.createAlertDialog({title:'leesh app notice', message:'Your device has geo turned off - turn it on.'}).show();
-	}else{
-		var authorization = Titanium.Geolocation.locationServicesAuthorization;
-		Ti.API.info('Authorization: '+authorization);
-		if( authorization == Titanium.Geolocation.AUTHORIZATION_DENIED ){
-			//@todo do something about auth denial
-		}else if( authorization == Titanium.Geolocation.AUTHORIZATION_RESTRICTED ){
-			//@todo do something about auth restriction
-		}
-	}
-	
-	//
-	// IF WE HAVE COMPASS GET THE HEADING
-	//
-	if( Titanium.Geolocation.hasCompass ){
-		//
-		//  TURN OFF ANNOYING COMPASS INTERFERENCE MESSAGE
-		//
-		Titanium.Geolocation.showCalibration = false;
-
-		//
-		// SET THE HEADING FILTER (THIS IS IN DEGREES OF ANGLE CHANGE)
-		// EVENT WON'T FIRE UNLESS ANGLE CHANGE EXCEEDS THIS VALUE
-		Titanium.Geolocation.headingFilter = 90;
-	
-		//
-		//  GET CURRENT HEADING - THIS FIRES ONCE
-		//
-		Ti.Geolocation.getCurrentHeading( function( eventObject ){
-			if (eventObject.error){
-				currentHeading.text = 'error: ' + eventObject.error;
-				Ti.API.info("Code translation: "+translateErrorCode(eventObject.code));
-				return;
+		function isGeoOn(){
+			if (Titanium.Geolocation.locationServicesEnabled === false){
+				Titanium.UI.createAlertDialog({title:'leesh app notice', message:'Your device has geo turned off - turn it on.'}).show();
+			}else{
+				var authorization = Titanium.Geolocation.locationServicesAuthorization;
+				Ti.API.info('Authorization: '+authorization);
+				if( authorization == Titanium.Geolocation.AUTHORIZATION_DENIED ){
+					//@todo do something about auth denial
+				}else if( authorization == Titanium.Geolocation.AUTHORIZATION_RESTRICTED ){
+					//@todo do something about auth restriction
+				}
 			}
-			var x = eventObject.heading.x;
-			var y = eventObject.heading.y;
-			var z = eventObject.heading.z;
-			var magneticHeading = eventObject.heading.magneticHeading;
-			var accuracy = eventObject.heading.accuracy;
-			var trueHeading = eventObject.heading.trueHeading;
-			var timestamp = eventObject.heading.timestamp;
-
-			currentHeading.text = 'x:' + x + ' y: ' + y + ' z:' + z;
-			Titanium.API.info('geo - current heading: ' + new Date( timestamp ) + ' x ' + x + ' y ' + y + ' z ' + z);
-		});
-
+		}
+		//
+		// IF WE HAVE COMPASS GET THE HEADING
+		//
+		function isCompassOn(){
+			if( Titanium.Geolocation.hasCompass ){
+				//
+				//  TURN OFF ANNOYING COMPASS INTERFERENCE MESSAGE
+				//
+				Titanium.Geolocation.showCalibration = false;
+		
+				//
+				// SET THE HEADING FILTER (THIS IS IN DEGREES OF ANGLE CHANGE)
+				// EVENT WON'T FIRE UNLESS ANGLE CHANGE EXCEEDS THIS VALUE
+				Titanium.Geolocation.headingFilter = 90;
+			
+				//
+				//  GET CURRENT HEADING - THIS FIRES ONCE
+				//
+				Ti.Geolocation.getCurrentHeading( function( eventObject ){
+					if (eventObject.error){
+						currentHeading.text = 'error: ' + eventObject.error;
+						Ti.API.info("Code translation: "+translateErrorCode(eventObject.code));
+						return;
+					}
+					var x = eventObject.heading.x;
+					var y = eventObject.heading.y;
+					var z = eventObject.heading.z;
+					var magneticHeading = eventObject.heading.magneticHeading;
+					var accuracy = eventObject.heading.accuracy;
+					var trueHeading = eventObject.heading.trueHeading;
+					var timestamp = eventObject.heading.timestamp;
+		
+					currentHeading.text = 'x:' + x + ' y: ' + y + ' z:' + z;
+					Titanium.API.info('geo - current heading: ' + new Date( timestamp ) + ' x ' + x + ' y ' + y + ' z ' + z);
+				});
+		}
 		//
 		// EVENT LISTENER FOR COMPASS EVENTS - THIS WILL FIRE REPEATEDLY (BASED ON HEADING FILTER)
 		//
@@ -233,5 +235,3 @@ function geo() {
 		});
 	}	
 }
-
-module.exports = geo;

@@ -2,7 +2,7 @@
 /**
  * Constructor for the Stately state machine class.
  */
-var Stately = function (states) {
+Stately = function (states) {
     this.ERROR = {is_state: true, name: "ERROR"}
 
     for (var state_name in states) {
@@ -56,4 +56,4 @@ Stately.machine = function (states) {
     return new Stately(states);
 }
 
-if (exports) exports.Stately = Stately;
+//if (exports) exports.Stately = Stately;

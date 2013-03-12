@@ -10,6 +10,9 @@ NEW: {
         S.app.mainWindow.open();
         //based upon settings
         //either return this.OBSERVING.active OR this.OBSERVING.passive
+    },
+    test: function(){
+    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
     }
     
 },
@@ -40,6 +43,9 @@ COUPLE: {
     
     error: function(){
         //list coupling errors to group
+    },
+    test: function(){
+    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
     }
     
 },
@@ -63,6 +69,9 @@ OBSERVE:{
         //display notification of update with distance and age of data
         //update data
         //return this.REPORT appropriate to application settings;
+    },
+    test: function(){
+    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
     }
     
 },
@@ -141,6 +150,9 @@ REPORT: {
         //wait and retry, issue this.WARNING, or this.DANGER
         //return this.OBSERVING appropriate to application settings;
     },
+    test: function(){
+    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    }
 
 },
 
@@ -157,20 +169,29 @@ WARNING: {
 			//display stats of device that misses safety test
 			//display confirm opportunity to notify authorities
 			//or cancel
-	}
+	},
+    test: function(){
+    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    }
 },
 
 DANGER: {
     
     //notify authorities
-    notify: function(){}
+    notify: function(){},
+    test: function(){
+    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    }
     
 },
 
 WAIT: {
     
     //wait
-    wait: function(){}
+    wait: function(){},
+    test: function(){
+    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
+    }
     
 },
 
@@ -184,6 +205,9 @@ SHUTDOWN: {
         //is device being shut down
         //log and report
         //else clean up
+    },
+    test: function(){
+    	Ti.API.info( 'In stately: ' + controller.getMachineState() );
     }
     
 }
@@ -191,17 +215,18 @@ SHUTDOWN: {
 });
 
 controller.start();
-
-if( localAppropriate ){
-    controller.local();
-}else{
-    controller.remote();
-}
-
-if( ok ){
-    controller.ok();
-}else{
-    controller.error();
-}
+controller.test();
+// hypothitical implementation
+// if( localAppropriate ){
+    // controller.local();
+// }else{
+    // controller.remote();
+// }
+// 
+// if( ok ){
+    // controller.ok();
+// }else{
+    // controller.error();
+// }
 
 controller.end()
