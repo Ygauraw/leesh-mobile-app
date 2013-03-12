@@ -2,7 +2,7 @@
 /**
  * Constructor for the Stately state machine class.
  */
-Stately = function (states) {
+var Stately = function (states) {
     this.ERROR = {is_state: true, name: "ERROR"}
 
     for (var state_name in states) {

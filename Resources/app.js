@@ -138,10 +138,26 @@ REPORT: {
         //what role is the current device?
         //any alternatives?
         //what was the circumstance of the user?
-        //wait and retry, issue warning, or this.DANGER
+        //wait and retry, issue this.WARNING, or this.DANGER
         //return this.OBSERVING appropriate to application settings;
     },
 
+},
+
+WARNING: {
+	//issue regular warning to group
+	warning: function(){
+		//issue warning to group
+			//is it:
+				//too slow?
+				//too fast?
+				//too far?
+				//off?
+			//for any of the above
+			//display stats of device that misses safety test
+			//display confirm opportunity to notify authorities
+			//or cancel
+	}
 },
 
 DANGER: {
