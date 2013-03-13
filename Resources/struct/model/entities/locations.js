@@ -1,7 +1,7 @@
 var locations = new joli.model({
   table:    'locations',
   columns:  {
-    id:                 'PRIMARY KEY AUTOINCREMENT',
+    id:                 'INTEGER PRIMARY KEY AUTOINCREMENT',
     timeStamp:			'TEXT',  			//var timestamp = eventObject.coords.timestamp;	
     latitude:          	'TEXT',  			//var latitude = eventObject.coords.latitude;
     longitude:          'TEXT',  			//var longitude = eventObject.coords.longitude;

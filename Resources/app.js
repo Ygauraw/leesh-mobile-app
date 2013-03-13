@@ -2,38 +2,36 @@
 Ti.include("/struct/struct.js");
 
 var controller = Stately.machine({
-NEW: {
-    
+'NEW': {
+	
     //startup
-    start: function () {
+    'start': function () {
         S.app.mainWindow = S.ui.createApplicationWindow();
         S.app.mainWindow.open();
         //based upon settings
-        //either return this.OBSERVING.active OR this.OBSERVING.passive
-    },
-    test: function(){
-    	Ti.API.info( 'In stately: ' + this.getMachineState() );
+        //either return this.OBSERVE.active OR this.OBSERVE.passive
+        return this.REPORT;
     }
     
 },
 
-COUPLE: {
+'COUPLE': {
     
     //couple 2 or more devices to a peer group
-    connect: function(){
+    'connect': function(){
         //generate group id
         //give preliminary link to devices in peer group
-        return this.COUPLE.giveRole;
+        return this.COUPLE.giveRoles;
     },
     
-    giveRoles: function(){
+    'giveRoles': function(){
         //allow each user to choose a role
         //be it observer, observed, or peer (mutual observation)
         //upon selection
         return this.COUPLE.confirm;
     },
     
-    confirm: function(){
+    'confirm': function(){
         //show list of users in peer group with chosen roles listed
         //if unanimous confirmation, write roles to db
         //else show list again on all devices for those contested group members
@@ -41,19 +39,15 @@ COUPLE: {
         //repeat if needed
     },
     
-    error: function(){
+    'error': function(){
         //list coupling errors to group
-    },
-    test: function(){
-    	Ti.API.info( 'In stately: ' + this.getMachineState() );
     }
-    
 },
 
-OBSERVE:{
+'OBSERVE': {
     
     //collecting info
-    active: function () {
+    'active': function () {
         //get last report
         //get distance from last known
         //get bearing towards target from last known
@@ -62,40 +56,38 @@ OBSERVE:{
         //return this.REPORT appropriate to application settings;
     },
     
-    passive: function () {
+    'passive': function () {
         //get last report
         //get distance from last known
         //get bearing towards target from last known
         //display notification of update with distance and age of data
         //update data
         //return this.REPORT appropriate to application settings;
-    },
-    test: function(){
-    	Ti.API.info( 'In stately: ' + this.getMachineState() );
     }
-    
 },
 
-REPORT: {
+'REPORT': {
     
     //refresh datastore
-    local: function(){
+    'local': function(){
         //if it hasn't hapened too often or for too long
         //check location
         var currentPosition = geo.getCurrentPosition();
         //plot point in db
-        currentPosition.record = models.locations.newRecord({
-		    timeStamp:			currentPosition.coords.timestamp,	
-		    latitude:          	currentPosition.coords.latitude,
-		    longitude:          currentPosition.coords.longitude,
-		    altitude:			currentPosition.coords.altitude,
-		    alltitudeAccuracy:	currentPosition.coords.altitudeAccuracy,
-		    heading:			currentPosition.coords.heading, 			
-		    accuracy:			currentPosition.coords.accuracy, 			
-		    speed:				currentPosition.coords.speed
-        });        
+        var record = locations.newRecord({
+		    timeStamp:			currentPosition.timestamp,	
+		    latitude:          	currentPosition.latitude,
+		    longitude:          currentPosition.longitude,
+		    altitude:			currentPosition.altitude,
+		    alltitudeAccuracy:	currentPosition.altitudeAccuracy,
+		    heading:			currentPosition.heading, 			
+		    accuracy:			currentPosition.accuracy, 			
+		    speed:				currentPosition.speed
+        });
+        record.save();
+        Ti.API.info( locations.count() );        
         //compare distance to last point
-        var lastPosition = currentPosition.record.findById( currentPosition.record.id - 1 );
+        var lastPosition = currentPosition.record.findById( record.id - 1 );
         var distanceTraveled = geolib.getDistance( currentPosition, lastPosition );
         
         //just for testing, normally we would test gainst the other phones in the group
@@ -106,41 +98,50 @@ REPORT: {
         Ti.API.info( distanceFromNorthPole );
         
         //if any concern, issue warning()
+        if( concern ) return this.WARN;
         //if error then go to error()
+        if( error ) return this.error();
         //otherwise, go to ok()
+        else return this.ok();
     },
     
-    remote: function(){
+    'remote': function(){
         //log unreported points in google geofence
         	//get last timestamp in remote
         	//go to appropriate point in db
         	//post the remaining local measurements from db to remote from point of last timestamp
         	
         //check location
-        var currentPosition = geo.getCurrentPosition();
+        //var currentPosition = JSON.parse( geo.getCurrentPosition() );
+        var currentPosition = Ti.Geolocation.getCurrentPosition( function( e ){ return e.coords; } );
         //plot point in db
-        currentPosition.record = models.locations.newRecord({
-		    timeStamp:			currentPosition.coords.timestamp,	
-		    latitude:          	currentPosition.coords.latitude,
-		    longitude:          currentPosition.coords.longitude,
-		    altitude:			currentPosition.coords.altitude,
-		    alltitudeAccuracy:	currentPosition.coords.altitudeAccuracy,
-		    heading:			currentPosition.coords.heading, 			
-		    accuracy:			currentPosition.coords.accuracy, 			
-		    speed:				currentPosition.coords.speed
+        var record = locations.newRecord({
+		    timeStamp:			currentPosition.timestamp,	
+		    latitude:          	currentPosition.latitude,
+		    longitude:          currentPosition.longitude,
+		    altitude:			currentPosition.altitude,
+		    alltitudeAccuracy:	currentPosition.altitudeAccuracy,
+		    heading:			currentPosition.heading, 			
+		    accuracy:			currentPosition.accuracy, 			
+		    speed:				currentPosition.speed
         });
+        record.save();
+        Ti.API.info( locations.count() );  
                 
         //if any concern, issue warning()
         //if error then go to error()
         //otherwise, go to ok()
     },
     
-    ok: function () {
+    'ok': function () {
         //update is just fine
+        //if it has happened recently, go to wait
+        if( true ) return this.WAIT; //@todo get to this if true...
         //return this.REPORT appropriate to application settings;
+        else return this.REPORT;
     },
     
-    error: function () {
+    'error': function () {
         //log and count error
         //if too many errors?
         //what kind of error is it?
@@ -149,16 +150,12 @@ REPORT: {
         //what was the circumstance of the user?
         //wait and retry, issue this.WARNING, or this.DANGER
         //return this.OBSERVING appropriate to application settings;
-    },
-    test: function(){
-    	Ti.API.info( 'In stately: ' + this.getMachineState() );
     }
-
 },
 
-WARNING: {
+'WARN': {
 	//issue regular warning to group
-	warning: function(){
+	'warn': function(){
 		//issue warning to group
 			//is it:
 				//too slow?
@@ -169,35 +166,26 @@ WARNING: {
 			//display stats of device that misses safety test
 			//display confirm opportunity to notify authorities
 			//or cancel
-	},
-    test: function(){
-    	Ti.API.info( 'In stately: ' + this.getMachineState() );
-    }
+	}
 },
 
-DANGER: {
+'DANGER': {
     
     //notify authorities
-    notify: function(){},
-    test: function(){
-    	Ti.API.info( 'In stately: ' + this.getMachineState() );
-    }
-    
+    'notify': function(){}  
 },
 
-WAIT: {
+'WAIT': {
     
     //wait
-    wait: function(){},
-    test: function(){
-    	Ti.API.info( 'In stately: ' + this.getMachineState() );
-    }
-    
+    'wait': function(){
+    	setinterval( function(){ return this.REPORT }, 3000 );
+    }  
 },
 
-SHUTDOWN: {
+'SHUTDOWN': {
     
-    end: function(){
+    'end': function(){
         //is this a surprise?
         //what role is this device?
         //if a surprise and device is target
@@ -205,21 +193,19 @@ SHUTDOWN: {
         //is device being shut down
         //log and report
         //else clean up
-    },
-    test: function(){
-    	Ti.API.info( 'In stately: ' + this.getMachineState() );
-    }
-    
+    }    
 }
 
 });
 
+controller.bind( function(){
+	Ti.API.info( String( this.getMachineEvents() ) );
+} );
+
 controller.start();
 
-Ti.API.info( 'started' );
-Ti.API.info( 'testing start' );
-controller.test();
-Ti.API.info( 'testing end' );
+controller.local();
+
 // hypothitical implementation
 // if( localAppropriate ){
     // controller.local();
@@ -233,5 +219,4 @@ Ti.API.info( 'testing end' );
     // controller.error();
 // }
 
-Ti.API.info( 'application end: shutting down' );
 controller.end()

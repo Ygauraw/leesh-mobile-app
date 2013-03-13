@@ -1,8 +1,8 @@
-function geo() {
+function Geo() {
 
-	Ti.Geolocation.purpose = "Peer tracking";
-	
-	function translateErrorCode(code) {
+	Ti.Geolocation.purpose = 'peer tracking';
+
+	this.translateErrorCode = function(code) {
 		if (code == null) {
 			return null;
 		}
@@ -23,67 +23,68 @@ function geo() {
 				return "Region monitoring setup delayed";
 		}
 	}
-	
-	
 	//
 	//  SHOW CUSTOM ALERT IF DEVICE HAS GEO TURNED OFF
 	//
-		function isGeoOn(){
-			if (Titanium.Geolocation.locationServicesEnabled === false){
-				Titanium.UI.createAlertDialog({title:'leesh app notice', message:'Your device has geo turned off - turn it on.'}).show();
-			}else{
-				var authorization = Titanium.Geolocation.locationServicesAuthorization;
-				Ti.API.info('Authorization: '+authorization);
-				if( authorization == Titanium.Geolocation.AUTHORIZATION_DENIED ){
-					//@todo do something about auth denial
-				}else if( authorization == Titanium.Geolocation.AUTHORIZATION_RESTRICTED ){
-					//@todo do something about auth restriction
-				}
+	this.isGeoOn = function() {
+		if (Titanium.Geolocation.locationServicesEnabled === false) {
+			Titanium.UI.createAlertDialog({
+				title : 'leesh app notice',
+				message : 'Your device has geo turned off - turn it on.'
+			}).show();
+		} else {
+			var authorization = Titanium.Geolocation.locationServicesAuthorization;
+			Ti.API.info('Authorization: ' + authorization);
+			if (authorization == Titanium.Geolocation.AUTHORIZATION_DENIED) {
+				//@todo do something about auth denial
+			} else if (authorization == Titanium.Geolocation.AUTHORIZATION_RESTRICTED) {
+				//@todo do something about auth restriction
 			}
 		}
-		//
-		// IF WE HAVE COMPASS GET THE HEADING
-		//
-		function isCompassOn(){
-			if( Titanium.Geolocation.hasCompass ){
-				//
-				//  TURN OFF ANNOYING COMPASS INTERFERENCE MESSAGE
-				//
-				Titanium.Geolocation.showCalibration = false;
-		
-				//
-				// SET THE HEADING FILTER (THIS IS IN DEGREES OF ANGLE CHANGE)
-				// EVENT WON'T FIRE UNLESS ANGLE CHANGE EXCEEDS THIS VALUE
-				Titanium.Geolocation.headingFilter = 90;
-			
-				//
-				//  GET CURRENT HEADING - THIS FIRES ONCE
-				//
-				Ti.Geolocation.getCurrentHeading( function( eventObject ){
-					if (eventObject.error){
-						currentHeading.text = 'error: ' + eventObject.error;
-						Ti.API.info("Code translation: "+translateErrorCode(eventObject.code));
-						return;
-					}
-					var x = eventObject.heading.x;
-					var y = eventObject.heading.y;
-					var z = eventObject.heading.z;
-					var magneticHeading = eventObject.heading.magneticHeading;
-					var accuracy = eventObject.heading.accuracy;
-					var trueHeading = eventObject.heading.trueHeading;
-					var timestamp = eventObject.heading.timestamp;
-		
-					currentHeading.text = 'x:' + x + ' y: ' + y + ' z:' + z;
-					Titanium.API.info('geo - current heading: ' + new Date( timestamp ) + ' x ' + x + ' y ' + y + ' z ' + z);
-				});
+	}
+	//
+	// IF WE HAVE COMPASS GET THE HEADING
+	//
+	this.isCompassOn = function() {
+		if (Titanium.Geolocation.hasCompass) {
+			//
+			//  TURN OFF ANNOYING COMPASS INTERFERENCE MESSAGE
+			//
+			Titanium.Geolocation.showCalibration = false;
+
+			//
+			// SET THE HEADING FILTER (THIS IS IN DEGREES OF ANGLE CHANGE)
+			// EVENT WON'T FIRE UNLESS ANGLE CHANGE EXCEEDS THIS VALUE
+			Titanium.Geolocation.headingFilter = 90;
+
+			//
+			//  GET CURRENT HEADING - THIS FIRES ONCE
+			//
+			Ti.Geolocation.getCurrentHeading(function(eventObject) {
+				if (eventObject.error) {
+					currentHeading.text = 'error: ' + eventObject.error;
+					Ti.API.info("Code translation: " + translateErrorCode(eventObject.code));
+					return;
+				}
+				var x = eventObject.heading.x;
+				var y = eventObject.heading.y;
+				var z = eventObject.heading.z;
+				var magneticHeading = eventObject.heading.magneticHeading;
+				var accuracy = eventObject.heading.accuracy;
+				var trueHeading = eventObject.heading.trueHeading;
+				var timestamp = eventObject.heading.timestamp;
+
+				currentHeading.text = 'x:' + x + ' y: ' + y + ' z:' + z;
+				Titanium.API.info('geo - current heading: ' + new Date(timestamp) + ' x ' + x + ' y ' + y + ' z ' + z);
+			});
 		}
 		//
 		// EVENT LISTENER FOR COMPASS EVENTS - THIS WILL FIRE REPEATEDLY (BASED ON HEADING FILTER)
 		//
-		var headingCallback = function(eventObject){
-			if (eventObject.error){
+		var headingCallback = function(eventObject) {
+			if (eventObject.error) {
 				updatedHeading.text = 'error: ' + eventObject.error;
-				Ti.API.info("Code translation: "+translateErrorCode(eventObject.code));
+				Ti.API.info("Code translation: " + translateErrorCode(eventObject.code));
 				return;
 			}
 
@@ -97,141 +98,126 @@ function geo() {
 
 			return eventObject;
 		}
-	
-		//
-		//  SET ACCURACY - THE FOLLOWING VALUES ARE SUPPORTED
-		//
-		// Titanium.Geolocation.ACCURACY_BEST
-		// Titanium.Geolocation.ACCURACY_NEAREST_TEN_METERS
-		// Titanium.Geolocation.ACCURACY_HUNDRED_METERS
-		// Titanium.Geolocation.ACCURACY_KILOMETER
-		// Titanium.Geolocation.ACCURACY_THREE_KILOMETERS
-		//
-		Titanium.Geolocation.accuracy = Titanium.Geolocation.ACCURACY_BEST;
-	
-		//
-		//  SET DISTANCE FILTER.  THIS DICTATES HOW OFTEN AN EVENT FIRES BASED ON THE DISTANCE THE DEVICE MOVES
-		//  THIS VALUE IS IN METERS
-		//@todo figure out the difference betwixt the Titanium.Geolocation.ACCURACY_NEAREST_TEN_METERS and this setting
-		Titanium.Geolocation.distanceFilter = 10;
-	
-		//
-		// GET CURRENT POSITION - THIS FIRES ONCE
-		//
+	}
+	//
+	//  SET ACCURACY - THE FOLLOWING VALUES ARE SUPPORTED
+	//
+	// Titanium.Geolocation.ACCURACY_BEST
+	// Titanium.Geolocation.ACCURACY_NEAREST_TEN_METERS
+	// Titanium.Geolocation.ACCURACY_HUNDRED_METERS
+	// Titanium.Geolocation.ACCURACY_KILOMETER
+	// Titanium.Geolocation.ACCURACY_THREE_KILOMETERS
+	//
+	Titanium.Geolocation.accuracy = Titanium.Geolocation.ACCURACY_BEST;
+	//
+	// GET CURRENT POSITION - THIS FIRES ONCE
+	//
 
-		var getCurrentPosition = function(){
-				Titanium.Geolocation.getCurrentPosition( function( eventObject ){
-				if (!eventObject.success || eventObject.error){
-					currentLocation.text = 'error: ' + JSON.stringify(eventObject.error);
-					Ti.API.info("Code translation: "+translateErrorCode(eventObject.code));
-					alert('error ' + JSON.stringify(eventObject.error));
-					return;
-				}
-		
-				var longitude = eventObject.coords.longitude;
-				var latitude = eventObject.coords.latitude;
-				var altitude = eventObject.coords.altitude;
-				var heading = eventObject.coords.heading;
-				var accuracy = eventObject.coords.accuracy;
-				var speed = eventObject.coords.speed;
-				var timestamp = eventObject.coords.timestamp;
-				var altitudeAccuracy = eventObject.coords.altitudeAccuracy;
-				Ti.API.info('speed ' + speed);
-				currentLocation.text = 'long:' + longitude + ' lat: ' + latitude;
-		
-				Titanium.API.info('geo - current location: ' + new Date(timestamp) + ' long ' + longitude + ' lat ' + latitude + ' accuracy ' + accuracy);
-				
-				return eventObject;
-			});
-		}
-	
-		//
-		// EVENT LISTENER FOR GEO EVENTS - THIS WILL FIRE REPEATEDLY (BASED ON DISTANCE FILTER)
-		//
-		var locationCallback = function( eventObject ){
-			//Mobileweb seems to be not firing window event for some odd reason.
-			if (!eventObject.success || eventObject.error){
-				updatedLocation.text = 'error:' + JSON.stringify(eventObject.error);
-				updatedLatitudeventObject.text = '';
-				updatedLocationAccuracy.text = '';
-				updatedLocationTimeventObject.text = '';
-				Ti.API.info("Code translation: "+translateErrorCode(eventObject.code));
+	this.getCurrentPosition = function() {
+		Titanium.Geolocation.getCurrentPosition(function(eventObject) {
+			if (!eventObject.success || eventObject.error) {
+				currentLocation.text = 'error: ' + JSON.stringify(eventObject.error);
+				Ti.API.info("Code translation: " + translateErrorCode(eventObject.code));
+				alert('error ' + JSON.stringify(eventObject.error));
 				return;
 			}
-	
-			var longitude = eventObject.coords.longitude;
-			var latitude = eventObject.coords.latitude;
-			var altitude = eventObject.coords.altitude;
-			var heading = eventObject.coords.heading;
-			var accuracy = eventObject.coords.accuracy;
-			var speed = eventObject.coords.speed;
-			var timestamp = eventObject.coords.timestamp;
-			var altitudeAccuracy = eventObject.coords.altitudeAccuracy;
-	
-			//Titanium.Geolocation.distanceFilter = 100; //changed after first location event
-	
-			updatedLocation.text = 'long:' + longitude;
-			updatedLatitudeventObject.text = 'lat: '+ latitude;
-			updatedLocationAccuracy.text = 'accuracy:' + accuracy;
-			updatedLocationTimeventObject.text = 'timestamp:' +new Date(timestamp);
-	
-			updatedLatitudeventObject.color = 'red';
-			updatedLocation.color = 'red';
-			updatedLocationAccuracy.color = 'red';
-			updatedLocationTimeventObject.color = 'red';
-			setTimeout( function(){
-				updatedLatitudeventObject.color = '#444';
-				updatedLocation.color = '#444';
-				updatedLocationAccuracy.color = '#444';
-				updatedLocationTimeventObject.color = '#444';
-	
-			},100);
-	
-			// reverse geo
-			Titanium.Geolocation.reverseGeocoder(latitude,longitude,function(evt){
-				if (evt.success){
-					var places = evt.places;
-					if (places && places.length){
-						reverseGeo.text = places[0].address;
-					} else {
-						reverseGeo.text = "No address found";
-					}
-					Ti.API.debug("reverse geolocation result = "+JSON.stringify(evt));
-				}else{
-					Ti.UI.createAlertDialog({
-						title:'Reverse geo error',
-						message:evt.error
-					}).show();
-					Ti.API.info("Code translation: "+translateErrorCode(eventObject.code));
-				}
-			});	
-	
-			Titanium.API.info('geo - location updated: ' + new Date(timestamp) + ' long ' + longitude + ' lat ' + latitude + ' accuracy ' + accuracy);
-		};
-		Titanium.Geolocation.addEventListener('location', locationCallback);		
+			Ti.API.info( JSON.stringify( eventObject.coords ) );
+			return JSON.stringify( eventObject.coords );
+		});
 	}
+	//
+	//  SET DISTANCE FILTER.  THIS DICTATES HOW OFTEN AN EVENT FIRES BASED ON THE DISTANCE THE DEVICE MOVES
+	//  THIS VALUE IS IN METERS
+	//@todo figure out the difference betwixt the Titanium.Geolocation.ACCURACY_NEAREST_TEN_METERS and this setting
+	Titanium.Geolocation.distanceFilter = 10;
 
-	var forwardGeocoder = function( addr ){
-		
-		Titanium.Geolocation.forwardGeocoder(addr,function(evt){
+	//
+	// EVENT LISTENER FOR GEO EVENTS - THIS WILL FIRE REPEATEDLY (BASED ON DISTANCE FILTER)
+	//
+	function locationCallback(eventObject) {
+		//Mobileweb seems to be not firing window event for some odd reason.
+		if (!eventObject.success || eventObject.error) {
+			updatedLocation.text = 'error:' + JSON.stringify(eventObject.error);
+			updatedLatitudeventObject.text = '';
+			updatedLocationAccuracy.text = '';
+			updatedLocationTimeventObject.text = '';
+			Ti.API.info("Code translation: " + translateErrorCode(eventObject.code));
+			return;
+		}
+
+		var longitude = eventObject.coords.longitude;
+		var latitude = eventObject.coords.latitude;
+		var altitude = eventObject.coords.altitude;
+		var heading = eventObject.coords.heading;
+		var accuracy = eventObject.coords.accuracy;
+		var speed = eventObject.coords.speed;
+		var timestamp = eventObject.coords.timestamp;
+		var altitudeAccuracy = eventObject.coords.altitudeAccuracy;
+
+		//Titanium.Geolocation.distanceFilter = 100; //changed after first location event
+
+		// updatedLocation.text = 'long:' + longitude;
+		// updatedLatitudeventObject.text = 'lat: ' + latitude;
+		// updatedLocationAccuracy.text = 'accuracy:' + accuracy;
+		// updatedLocationTimeventObject.text = 'timestamp:' + new Date(timestamp);
+
+		updatedLatitudeventObject.color = 'red';
+		updatedLocation.color = 'red';
+		updatedLocationAccuracy.color = 'red';
+		updatedLocationTimeventObject.color = 'red';
+		setTimeout(function() {
+			updatedLatitudeventObject.color = '#444';
+			updatedLocation.color = '#444';
+			updatedLocationAccuracy.color = '#444';
+			updatedLocationTimeventObject.color = '#444';
+
+		}, 100);
+
+		// reverse geo
+		Titanium.Geolocation.reverseGeocoder(latitude, longitude, function(evt) {
+			if (evt.success) {
+				var places = evt.places;
+				if (places && places.length) {
+					reverseGeo.text = places[0].address;
+				} else {
+					reverseGeo.text = "No address found";
+				}
+				Ti.API.debug("reverse geolocation result = " + JSON.stringify(evt));
+			} else {
+				Ti.UI.createAlertDialog({
+					title : 'Reverse geo error',
+					message : evt.error
+				}).show();
+				Ti.API.info("Code translation: " + translateErrorCode(eventObject.code));
+			}
+		});
+
+		Titanium.API.info('geo - location updated: ' + new Date(timestamp) + ' long ' + longitude + ' lat ' + latitude + ' accuracy ' + accuracy);
+	};
+	Titanium.Geolocation.addEventListener('location', locationCallback);
+
+	this.forwardGeocoder = function(addr) {
+
+		Titanium.Geolocation.forwardGeocoder(addr, function(evt) {
 			Ti.API.info('in forward ');
-			forwardGeo.text = "lat:"+evt.latitude+", long:"+evt.longitude;
-			Titanium.Geolocation.reverseGeocoder(evt.latitude,evt.longitude,function(evt){
+			forwardGeo.text = "lat:" + evt.latitude + ", long:" + evt.longitude;
+			Titanium.Geolocation.reverseGeocoder(evt.latitude, evt.longitude, function(evt) {
 				if (evt.success) {
 					var text = "";
 					for (var i = 0; i < evt.places.length; i++) {
 						text += "" + i + ") " + evt.places[i].address + "\n";
 					}
-					Ti.API.info('Reversed forward: '+text);
-				}
-				else {
+					Ti.API.info('Reversed forward: ' + text);
+				} else {
 					Ti.UI.createAlertDialog({
-						title:'Forward geo error',
-						message:evt.error
+						title : 'Forward geo error',
+						message : evt.error
 					}).show();
-					Ti.API.info("Code translation: "+translateErrorCode(eventObject.code));
+					Ti.API.info("Code translation: " + translateErrorCode(eventObject.code));
 				}
 			});
 		});
-	}	
+	}
 }
+
+module.exports = Geo;
