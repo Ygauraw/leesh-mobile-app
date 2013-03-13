@@ -154,47 +154,9 @@ function Geo() {
 		var timestamp = eventObject.coords.timestamp;
 		var altitudeAccuracy = eventObject.coords.altitudeAccuracy;
 
-		//Titanium.Geolocation.distanceFilter = 100; //changed after first location event
-
-		// updatedLocation.text = 'long:' + longitude;
-		// updatedLatitudeventObject.text = 'lat: ' + latitude;
-		// updatedLocationAccuracy.text = 'accuracy:' + accuracy;
-		// updatedLocationTimeventObject.text = 'timestamp:' + new Date(timestamp);
-
-		updatedLatitudeventObject.color = 'red';
-		updatedLocation.color = 'red';
-		updatedLocationAccuracy.color = 'red';
-		updatedLocationTimeventObject.color = 'red';
-		setTimeout(function() {
-			updatedLatitudeventObject.color = '#444';
-			updatedLocation.color = '#444';
-			updatedLocationAccuracy.color = '#444';
-			updatedLocationTimeventObject.color = '#444';
-
-		}, 100);
-
-		// reverse geo
-		Titanium.Geolocation.reverseGeocoder(latitude, longitude, function(evt) {
-			if (evt.success) {
-				var places = evt.places;
-				if (places && places.length) {
-					reverseGeo.text = places[0].address;
-				} else {
-					reverseGeo.text = "No address found";
-				}
-				Ti.API.debug("reverse geolocation result = " + JSON.stringify(evt));
-			} else {
-				Ti.UI.createAlertDialog({
-					title : 'Reverse geo error',
-					message : evt.error
-				}).show();
-				Ti.API.info("Code translation: " + translateErrorCode(eventObject.code));
-			}
-		});
-
 		Titanium.API.info('geo - location updated: ' + new Date(timestamp) + ' long ' + longitude + ' lat ' + latitude + ' accuracy ' + accuracy);
 	};
-	Titanium.Geolocation.addEventListener('location', locationCallback);
+	//Titanium.Geolocation.addEventListener('location', locationCallback);
 
 	this.forwardGeocoder = function(addr) {
 

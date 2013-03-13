@@ -9,8 +9,12 @@ var controller = Stately.machine({
         S.app.mainWindow = S.ui.createApplicationWindow();
         S.app.mainWindow.open();
         //based upon settings
-        //either return this.OBSERVE.active OR this.OBSERVE.passive
-        return this.REPORT;
+    	//based upon roles
+    	//return this.OBSERVE
+        //else
+        //this.REPORT.remote() or local();
+        //else this.COUPLE
+        this.REPORT.local();
     }
     
 },
@@ -21,14 +25,20 @@ var controller = Stately.machine({
     'connect': function(){
         //generate group id
         //give preliminary link to devices in peer group
-        return this.COUPLE.giveRoles;
+        //if error
+        //return this.COUPLE.error()
+        //else
+        this.COUPLE.giveRoles;
     },
     
     'giveRoles': function(){
         //allow each user to choose a role
         //be it observer, observed, or peer (mutual observation)
         //upon selection
-        return this.COUPLE.confirm;
+        //if error
+        //return this.COUPLE.error()
+        //else
+        this.COUPLE.confirm;
     },
     
     'confirm': function(){
@@ -37,6 +47,10 @@ var controller = Stately.machine({
         //else show list again on all devices for those contested group members
         //with option to remove contested members from group, or cancel entirely
         //repeat if needed
+        //if error
+        //return this.COUPLE.error()
+        //else
+        //return this.OBSERVE
     },
     
     'error': function(){
@@ -48,7 +62,7 @@ var controller = Stately.machine({
     
     //collecting info
     'active': function () {
-        //get last report
+        //get last report from paired device
         //get distance from last known
         //get bearing towards target from last known
         //display onscreen
@@ -57,7 +71,7 @@ var controller = Stately.machine({
     },
     
     'passive': function () {
-        //get last report
+        //get last report from paired device
         //get distance from last known
         //get bearing towards target from last known
         //display notification of update with distance and age of data
@@ -71,38 +85,60 @@ var controller = Stately.machine({
     //refresh datastore
     'local': function(){
         //if it hasn't hapened too often or for too long
+        //ask professionals what that might be...
         //check location
-        var currentPosition = geo.getCurrentPosition();
-        //plot point in db
-        var record = locations.newRecord({
-		    timeStamp:			currentPosition.timestamp,	
-		    latitude:          	currentPosition.latitude,
-		    longitude:          currentPosition.longitude,
-		    altitude:			currentPosition.altitude,
-		    alltitudeAccuracy:	currentPosition.altitudeAccuracy,
-		    heading:			currentPosition.heading, 			
-		    accuracy:			currentPosition.accuracy, 			
-		    speed:				currentPosition.speed
-        });
-        record.save();
-        Ti.API.info( locations.count() );        
-        //compare distance to last point
-        var lastPosition = currentPosition.record.findById( record.id - 1 );
-        var distanceTraveled = geolib.getDistance( currentPosition, lastPosition );
-        
-        //just for testing, normally we would test gainst the other phones in the group
-        var northPole = { latitude: 90, longitude: 0 }
-        
-        var distanceFromNorthPole = geolib.getDistance( currentPosition, northPole );
-        
-        Ti.API.info( distanceFromNorthPole );
+        //var currentPosition = JSON.parse( geo.getCurrentPosition() );
+        Ti.Geolocation.getCurrentPosition( function( e ){ 
+	        if( !!e.error ) this.REPORT.error( e.error );
+	        //plot point in db
+	        var record = locations.newRecord({
+			    timeStamp:			e.coords.timestamp,	
+			    latitude:          	e.coords.latitude,
+			    longitude:          e.coords.longitude,
+			    altitude:			e.coords.altitude,
+			    alltitudeAccuracy:	e.coords.altitudeAccuracy,
+			    heading:			e.coords.heading, 			
+			    accuracy:			e.coords.accuracy, 			
+			    speed:				e.coords.speed
+	        });
+	        record.save();
+	        
+            //compare distance to last point
+            var whereWeAre = {
+            	latitude: e.coords.latitude,
+            	longitude: e.coords.longitude
+            };
+            
+            var whereWeWere = locations.findOneById( record.id - 1 );
+            
+            if( whereWeWere != 'undefined' ){
+	            var lastPosition = {
+	            	latitude: whereWeWere.latitude,
+	            	longitude: whereWeWere.longitude
+	            };
+		        var distanceTraveled = geolib.getDistance( whereWeAre, whereWeWere );
+		        Ti.API.info( 'distance traveled is: ' + distanceTraveled );
+		               	
+            }else{
+		        //just for testing, normally we would test gainst the other phones in the group
+		        var northPole = { latitude: 90, longitude: 0 }
+		        
+		        var distanceFromNorthPole = geolib.getDistance( whereWeAre, northPole );
+		        
+		        Ti.API.info( 'distance from north pole is: ' + distanceFromNorthPole );
+            }
+            
+	        
+        } );
+        Ti.API.info( 'locations count is: ' + locations.count() );         
         
         //if any concern, issue warning()
-        if( concern ) return this.WARN;
+        //if( concern ) return this.WARN;
         //if error then go to error()
-        if( error ) return this.error();
+        //if( error ) return this.error();
         //otherwise, go to ok()
-        else return this.ok();
+        //else return this.REPORT.ok();
+        return this.WAIT; //@todo remove temp redirect
     },
     
     'remote': function(){
@@ -112,25 +148,31 @@ var controller = Stately.machine({
         	//post the remaining local measurements from db to remote from point of last timestamp
         	
         //check location
-        //var currentPosition = JSON.parse( geo.getCurrentPosition() );
-        var currentPosition = Ti.Geolocation.getCurrentPosition( function( e ){ return e.coords; } );
-        //plot point in db
-        var record = locations.newRecord({
-		    timeStamp:			currentPosition.timestamp,	
-		    latitude:          	currentPosition.latitude,
-		    longitude:          currentPosition.longitude,
-		    altitude:			currentPosition.altitude,
-		    alltitudeAccuracy:	currentPosition.altitudeAccuracy,
-		    heading:			currentPosition.heading, 			
-		    accuracy:			currentPosition.accuracy, 			
-		    speed:				currentPosition.speed
-        });
-        record.save();
-        Ti.API.info( locations.count() );  
+        Ti.Geolocation.getCurrentPosition( function( e ){ 
+	        if( !!e.error ) this.REPORT.error( e.error );
+	        //plot point in db
+	        var record = locations.newRecord({
+			    timeStamp:			e.coords.timestamp,	
+			    latitude:          	e.coords.latitude,
+			    longitude:          e.coords.longitude,
+			    altitude:			e.coords.altitude,
+			    alltitudeAccuracy:	e.coords.altitudeAccuracy,
+			    heading:			e.coords.heading, 			
+			    accuracy:			e.coords.accuracy, 			
+			    speed:				e.coords.speed
+	        });
+	        record.save();
+        } );
+        Ti.API.info( 'locations count is: ' + locations.count() );  
                 
         //if any concern, issue warning()
+        //if( concern ) return this.WARN;
         //if error then go to error()
+        //if( error ) return this.error();
         //otherwise, go to ok()
+        //else return this.REPORT.ok();
+        return this.WAIT; //@todo remove temp redirect
+        
     },
     
     'ok': function () {
@@ -141,7 +183,8 @@ var controller = Stately.machine({
         else return this.REPORT;
     },
     
-    'error': function () {
+    'error': function ( error ) {
+    	Ti.API.info( error );
         //log and count error
         //if too many errors?
         //what kind of error is it?
@@ -172,14 +215,14 @@ var controller = Stately.machine({
 'DANGER': {
     
     //notify authorities
-    'notify': function(){}  
+    'danger': function(){}  
 },
 
 'WAIT': {
     
     //wait
     'wait': function(){
-    	setinterval( function(){ return this.REPORT }, 3000 );
+    	setTimeout( function(){ return this.REPORT.local.call( this ) }, 3000 );
     }  
 },
 
@@ -200,11 +243,12 @@ var controller = Stately.machine({
 
 controller.bind( function(){
 	Ti.API.info( String( this.getMachineEvents() ) );
+	Ti.API.info( this.getMachineState() );
+	//bind a Titanium event to the events of Stately
+	//Ti.API.fireEvent( this.getMachineState() );
 } );
 
 controller.start();
-
-controller.local();
 
 // hypothitical implementation
 // if( localAppropriate ){
@@ -218,5 +262,3 @@ controller.local();
 // }else{
     // controller.error();
 // }
-
-controller.end()
