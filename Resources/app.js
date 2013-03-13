@@ -14,7 +14,6 @@ var controller = Stately.machine({
         //else
         //this.REPORT.remote() or local();
         //else this.COUPLE
-        this.REPORT.local();
     }
     
 },
@@ -222,7 +221,8 @@ var controller = Stately.machine({
     
     //wait
     'wait': function(){
-    	setTimeout( function(){ return this.REPORT.local.call( this ) }, 3000 );
+    	setTimeout( function(){}, 3000 );
+    	this.REPORT.local();
     }  
 },
 
@@ -241,14 +241,21 @@ var controller = Stately.machine({
 
 });
 
-controller.bind( function(){
-	Ti.API.info( String( this.getMachineEvents() ) );
-	Ti.API.info( this.getMachineState() );
+controller.bind( function( event, oldState, newState ){
+	Ti.API.info( 'machine state is: ' + this.getMachineState() );
+	Ti.API.info( 'machine events are: ' + String( this.getMachineEvents() ) );
+	Ti.API.info( 'machine notification passed vars are: ' + 'e:' + event +' - states:'+ oldState + ' => ' + newState );
 	//bind a Titanium event to the events of Stately
 	//Ti.API.fireEvent( this.getMachineState() );
 } );
 
-controller.start();
+controller
+	.start()
+	.wait()
+	.local()
+	.wait()
+	.end();
+
 
 // hypothitical implementation
 // if( localAppropriate ){
