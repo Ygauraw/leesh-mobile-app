@@ -1,19 +1,34 @@
-/**
-* Appcelerator Titanium Platform
-* Copyright (c) 2009-2011 by Appcelerator, Inc. All Rights Reserved.
-* Licensed under the terms of the Apache Public License
-* Please see the LICENSE included with this distribution for details.
-**/
-// Code is stripped-down version of Tweetanium, to expose new structure paradigm
-
 (function(){
-	S.ui.createBarView = function(){
-		var view = Ti.UI.createView({backgroundColor: "green"}),
-			label = Ti.UI.createLabel($$.Label);
-		Ti.App.addEventListener("app:mood.update",function(e){
-			label.text = "You are "+S.app.mood+"!";
-		});
-		view.add(label);
+	S.ui.createMapView = function(){
+		var view = Ti.UI.createView( 
+			{ 
+				backgroundColor: "red",
+				layout: 'vertical'
+			} 
+		);
+		//display information regarding concern
+		var alertText = Ti.UI.createLabel(
+			S.combine(
+				{ 
+					text: "mapping phones unimplemented at this time" 
+				}, //@todo get concern text from WARNING type in controller
+				$$.Label
+			)
+		);
+		//create a cancel button
+		var backButton = Ti.UI.createButton(
+			S.combine(
+				{
+					title: "Back to main window."
+				},
+				$$.Button
+			)
+		);
+		//add it to the view
+		view.add(
+				alertText,
+				backButton
+				);
 		return view;
 	};
 })();

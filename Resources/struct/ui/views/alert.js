@@ -1,33 +1,34 @@
-/**
-* Appcelerator Titanium Platform
-* Copyright (c) 2009-2011 by Appcelerator, Inc. All Rights Reserved.
-* Licensed under the terms of the Apache Public License
-* Please see the LICENSE included with this distribution for details.
-**/
-// Code is stripped-down version of Tweetanium, to expose new structure paradigm
-
 (function(){
-	S.ui.createBazView = function(){
-		var view = Ti.UI.createView({backgroundColor: "blue"}),
-			textbox = Ti.UI.createTextField(S.combine({top:50,left:10,right:10,value:"radiant"},$$.TextField)),
-			button = Ti.UI.createButton(S.combine({title:"Become!",top:130,height:30,width:150},$$.button));
-		button.addEventListener("click",function(){
-			textbox.blur();
-			if (!textbox.value){
-				Ti.App.fireEvent("app:msg",{msg:"Must enter a mood!",error:true});
-				return;
-			}
-			if (textbox.value === S.app.mood){
-				Ti.App.fireEvent("app:msg",{msg:"You already are "+S.app.mood+"!",error:true});
-				return;
-			}
-			S.app.mood = textbox.value;
-			Ti.API.log("MOOD SET TO "+S.app.mood);
-			Ti.App.fireEvent("app:mood.update");
-			Ti.App.fireEvent("app:msg",{msg:"Awright! :)"});
-		});
-		view.add(textbox);
-		view.add(button); 
+	S.ui.createAlertView = function(){
+		var view = Ti.UI.createView(
+			{ 
+				backgroundColor: "red",
+				layout: 'vertical' 
+			} 
+		);
+		//display information regarding concern
+		var alertText = Ti.UI.createLabel(
+			S.combine(
+				{ 
+					text: "This text needs to come from controller, but needs to inform what app is doing" 
+				}, //@todo get concern text from WARNING type in controller
+				$$.Label
+			)
+		);
+		//create a cancel button
+		var cancelButton = Ti.UI.createButton(
+			S.combine(
+				{
+					text: "Contact Authorities"
+				},
+				$$.Button
+			)
+		);
+		//add it to the view
+		view.add(
+				alertText,
+				cancelButton
+				);
 		return view;
 	};
 })();
